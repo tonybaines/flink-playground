@@ -3,6 +3,7 @@ package tonybaines.flink
 // Need this import for Flink implicits
 import org.apache.flink.api.scala._
 import org.apache.flink.streaming.api.scala.{DataStream, StreamExecutionEnvironment}
+import tonybaines.flink.data.Csv
 
 import scala.io.Source
 
@@ -18,12 +19,12 @@ object ChargingDataAnalysis {
 
     val recordStream: DataStream[Array[String]] = env.fromCollection(csv)
 
-    val sum: DataStream[(Array[String], Int)] = recordStream
-      .map { r => (r, 1) }
-      .keyBy(r => r._1)
-      .sum(1)
+    val stream: DataStream[(String, String)] = recordStream
+      .filter(r => r.length >= Csv.lastUpdated)
+      .keyBy(r => r(Csv.lastUpdated))
+      .map(r => (r(Csv.chargeDeviceID), r(Csv.lastUpdated)))
 
-    print(sum)
+    stream.print()
 
     env.execute()
   }
