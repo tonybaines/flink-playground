@@ -1,0 +1,18 @@
+group 'tonybaines'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'scala'
+
+sourceCompatibility = 1.8
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  compile(['org.apache.flink:flink-scala_2.11:1.0.2',
+           'org.apache.flink:flink-streaming-scala_2.11:1.0.2',
+           'org.apache.flink:flink-clients_2.11:1.0.2'])
+  testCompile(['org.scalactic:scalactic_2.11:2.2.6',
+               'org.scalatest:scalatest_2.11:2.2.6'])
+}

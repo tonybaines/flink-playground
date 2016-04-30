@@ -1,0 +1,418 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html>
+<head>
+    <link rel="shortcut icon" href="/images/favicon.png" />
+		<title>NCR - National Charge Point Registry</title><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/smoothness/jquery-ui.css" media="screen" rel="stylesheet" type="text/css" />
+<link href="/css/main.css" media="screen" rel="stylesheet" type="text/css" />	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<!--[if IE]> <script type="text/javascript" src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
+<script type="text/javascript" src="/js/main.js"></script>
+<script type="text/javascript" src="/js/front-main.js"></script>
+<script type="text/javascript" src="/js/analytics.js"></script></head>
+<body>
+
+	<!-- wrapper start -->
+	<div id="wrapper">
+
+		<!-- top start -->
+		<div id="top">
+			<div class="wrapp">
+			</div>
+		</div>
+		<!-- top end -->
+
+		<!-- header start -->
+		<div id="header">
+			<div class="wrapp">
+			
+				<h1 id="logo"><a href="/device/">National Charge Point Registry UK</a></h1>
+								<ul class="navigation">
+    <li>
+        <a href="/api/help">Retrieve Help</a>
+    </li>
+</ul> 
+			</div>
+		</div>
+		<!-- header end -->
+
+		<!-- main start -->
+		<div id="main" class="cf">
+			<div id="content">
+				<h1>Retrieve Charge Point Data API</h1>
+<div class="row">
+  <h2>Retrieve Data</h2>
+  <p>You can request charge point data for all active devices that we hold by requesting the following URL: </p>
+  <pre class="code">http://chargepoints.dft.gov.uk/api/retrieve/{data_type}</pre>
+  <h2>Data types</h2>
+  <p>You can retrieve the following data types via the API </p>
+  <pre class="code"><b>registry</b> - Charge Point Registry
+	<br><b>type</b> - Connector Types
+	<br><b>bearing</b> - Bearings
+	<br><b>method</b> - Charging Methods
+	<br><b>mode</b> - Charge Modes
+	<br><b>status</b> - Connector Statuses
+	</pre>
+  <h2>Request options</h2>
+  <p>You can supply the following option for all data types:</p>
+  <pre class="code"><b>format</b>[xml|json|csv] - Output format, default is 'xml'
+	</pre>
+  <p>And any of these for the <b>registry</b> data type</p>
+  <pre class="code"><b>limit</b> - Integer to limit results returned, don't specify to return all devices
+	<br><b>id</b> - ID of scheme, this will also return the scheme details
+	<br><b>country</b>[gb|es|nl|...] - 2 character ISO 3166 country code
+	<br><b>postcode</b> - Full or partial UK postcode (e.g. EC3A 7BR, EC3A 7, EC3A) * 
+	<br><b>lat</b> - Latitiude (long required)
+	<br><b>long</b> - Longitude (lat required)
+	<br><b>dist</b> - Search will return all devices within distance of postcode or lat/long
+	<br><b>units</b>[mi|km] - Units for <b>dist</b>, default is 'mi'
+	</pre>
+  <p class="note">* Spaces can be url encoded (ie as '+' or '%20'). For 
+    full postcodes spaces can be omitted altogether, but this is not 
+    recommended for partial postcodes as it can be ambiguous.</p>
+  <p>Options are specified in the following format</p>
+  <pre class="code">http://chargepoints.dft.gov.uk/api/retrieve/{option1}/{value1}/{option2}/{value2}/</pre>
+</div>
+<div class="row">
+  <h2>Examples</h2>
+  <p>The 10 closest devices to your postcode: </p>
+  <pre class="code">http://chargepoints.dft.gov.uk/api/retrieve/registry/postcode/EC3A+7BR/limit/10/</pre>
+  <p>All the devices within a 10 mile radius of your position: </p>
+  <pre class="code">http://chargepoints.dft.gov.uk/api/retrieve/registry/lat/51.545581/long/-0.077301/dist/10/</pre>
+  <p>All the connector types in CSV format: </p>
+  <pre class="code">http://chargepoints.dft.gov.uk/api/retrieve/type/format/csv/</pre>
+</div>
+<div class="row">
+  <h2>Response</h2>
+  <h3>XML</h3>
+  <p>Returned data is as follows:</p>
+  <pre class="code">&lt;p:ChargeDevices&gt;<br />
+&nbsp;&lt;Scheme&gt;<br />
+&nbsp;&lt;SchemeCode&gt;SchemeCode&lt;/SchemeCode&gt;<br />
+&nbsp;&lt;SchemeData&gt;<br />
+&nbsp;&nbsp;&lt;OrganisationName&gt;OrganisationName&lt;/OrganisationName&gt;<br />
+&nbsp;&nbsp;&lt;Website&gt;Website&lt;/Website&gt;<br />
+&nbsp;&nbsp;&lt;TelephoneNo&gt;TelephoneNo&lt;/TelephoneNo&gt;<br />
+&nbsp;&nbsp;&lt;ContactName&gt;ContactName&lt;/ContactName&gt;<br />
+&nbsp;&lt;/SchemeData&gt;<br />
+&nbsp;&lt;/Scheme&gt;<br />
+&nbsp;&lt;ChargeDevice&gt;<br />
+&nbsp;&lt;ChargeDeviceId&gt;ChargeDeviceId&lt;/ChargeDeviceId&gt;<br />
+&nbsp;&lt;ChargeDeviceRef&gt;ChargeDeviceRef&lt;/ChargeDeviceRef&gt;<br />
+&nbsp;&lt;ChargeDeviceName&gt;ChargeDeviceName&lt;/ChargeDeviceName&gt;<br />
+&nbsp;&lt;ChargeDeviceText&gt;ChargeDeviceText&lt;/ChargeDeviceText&gt;<br />
+&nbsp;&lt;ChargeDeviceLocation&gt;<br />
+&nbsp;&nbsp;&lt;Latitude&gt;0.0&lt;/Latitude&gt;<br />
+&nbsp;&nbsp;&lt;Longitude&gt;0.0&lt;/Longitude&gt;<br />
+&nbsp;&nbsp;&lt;Address&gt;<br />
+&nbsp;&nbsp;&lt;SubBuildingName&gt;SubBuildingName&lt;/SubBuildingName&gt;<br />
+&nbsp;&nbsp;&lt;BuildingName&gt;BuildingName&lt;/BuildingName&gt;<br />
+&nbsp;&nbsp;&lt;BuildingNumber&gt;BuildingNumber&lt;/BuildingNumber&gt;<br />
+&nbsp;&nbsp;&lt;Thoroughfare&gt;Thoroughfare&lt;/Thoroughfare&gt;<br />
+&nbsp;&nbsp;&lt;Street&gt;Street&lt;/Street&gt;<br />
+&nbsp;&nbsp;&lt;DoubleDependantLocality&gt;DoubleDependantLocality&lt;/DoubleDependantLocality&gt;<br />
+&nbsp;&nbsp;&lt;DependantLocality&gt;DependantLocality&lt;/DependantLocality&gt;<br />
+&nbsp;&nbsp;&lt;PostTown&gt;PostTown&lt;/PostTown&gt;<br />
+&nbsp;&nbsp;&lt;PostCode&gt;PostCode&lt;/PostCode&gt;<br />
+&nbsp;&nbsp;&lt;Country&gt;Country&lt;/Country&gt;<br />
+&nbsp;&nbsp;&lt;/Address&gt;<br />
+&nbsp;&nbsp;&lt;LocationShortDescription&gt;LocationShortDescription&lt;/LocationShortDescription&gt;<br />
+&nbsp;&nbsp;&lt;LocationLongDescription&gt;LocationLongDescription&lt;/LocationLongDescription&gt;<br />
+&nbsp;&lt;/ChargeDeviceLocation&gt;<br />
+&nbsp;&lt;Connector&gt;<br />
+&nbsp;&nbsp;&lt;ConnectorId&gt;ConnectorId&lt;/ConnectorId&gt;<br />
+&nbsp;&nbsp;&lt;ConnectorType&gt;ConnectorType&lt;/ConnectorType&gt;<br />
+&nbsp;&nbsp;&lt;RatedOutputkW&gt;0.0&lt;/RatedOutputkW&gt;<br />
+&nbsp;&nbsp;&lt;RatedOutputVoltage&gt;0&lt;/RatedOutputVoltage&gt;<br />
+&nbsp;&nbsp;&lt;RatedOutputCurrent&gt;0&lt;/RatedOutputCurrent&gt;<br />
+&nbsp;&nbsp;&lt;ChargeMethod&gt;ChargeMethod&lt;/ChargeMethod&gt;<br />
+&nbsp;&nbsp;&lt;ChargeMode&gt;0&lt;/ChargeMode&gt;<br />
+&nbsp;&nbsp;&lt;ChargePointStatus&gt;0&lt;/ChargePointStatus&gt;<br />
+&nbsp;&nbsp;&lt;TetheredCable&gt;0&lt;/TetheredCable&gt;<br />
+&nbsp;&nbsp;&lt;Information&gt;Information&lt;/Information&gt;<br />
+&nbsp;&nbsp;&lt;Validated&gt;0&lt;/Validated&gt;<br />
+&nbsp;&lt;/Connector&gt;<br />
+&nbsp;&lt;DeviceOwner&gt;<br />
+&nbsp;&nbsp;&lt;OrganisationName&gt;OrganisationName&lt;/OrganisationName&gt;<br />
+&nbsp;&nbsp;&lt;SchemeCode&gt;SchemeCode&lt;/SchemeCode&gt;<br />
+&nbsp;&nbsp;&lt;Website&gt;Website&lt;/Website&gt;<br />
+&nbsp;&nbsp;&lt;TelephoneNo&gt;TelephoneNo&lt;/TelephoneNo&gt;<br />
+&nbsp;&nbsp;&lt;ContactName&gt;ContactName&lt;/ContactName&gt;<br />
+&nbsp;&lt;/DeviceOwner&gt;<br />
+&nbsp;&lt;DeviceController&gt;<br />
+&nbsp;&nbsp;&lt;OrganisationName&gt;OrganisationName&lt;/OrganisationName&gt;<br />
+&nbsp;&nbsp;&lt;SchemeCode&gt;SchemeCode&lt;/SchemeCode&gt;<br />
+&nbsp;&nbsp;&lt;Website&gt;Website&lt;/Website&gt;<br />
+&nbsp;&nbsp;&lt;TelephoneNo&gt;TelephoneNo&lt;/TelephoneNo&gt;<br />
+&nbsp;&nbsp;&lt;ContactName&gt;ContactName&lt;/ContactName&gt;<br />
+&nbsp;&lt;/DeviceController&gt;<br />
+&nbsp;&lt;DeviceAccess&gt;<br />
+&nbsp;&nbsp;&lt;Open24Hours&gt;true&lt;/Open24Hours&gt;<br />
+&nbsp;&nbsp;&lt;AnnualClosings&gt;<br />
+&nbsp;&nbsp;&lt;From&gt;2001-01-01&lt;/From&gt;<br />
+&nbsp;&nbsp;&lt;To&gt;2001-01-01&lt;/To&gt;<br />
+&nbsp;&nbsp;&lt;/AnnualClosings&gt;<br />
+&nbsp;&nbsp;&lt;RegularOpenings&gt;<br />
+&nbsp;&nbsp;&lt;Days&gt;Monday&lt;/Days&gt;<br />
+&nbsp;&nbsp;&lt;Hours&gt;<br />
+&nbsp;&nbsp;&nbsp;&lt;From&gt;12:00:00&lt;/From&gt;<br />
+&nbsp;&nbsp;&nbsp;&lt;To&gt;12:00:00&lt;/To&gt;<br />
+&nbsp;&nbsp;&lt;/Hours&gt;<br />
+&nbsp;&nbsp;&lt;/RegularOpenings&gt;<br />
+&nbsp;&nbsp;&lt;AnnualOpenings&gt;<br />
+&nbsp;&nbsp;&lt;Date&gt;2001-01-01&lt;/Date&gt;<br />
+&nbsp;&nbsp;&lt;Hours&gt;<br />
+&nbsp;&nbsp;&nbsp;&lt;From&gt;12:00:00&lt;/From&gt;<br />
+&nbsp;&nbsp;&nbsp;&lt;To&gt;12:00:00&lt;/To&gt;<br />
+&nbsp;&nbsp;&lt;/Hours&gt;<br />
+&nbsp;&nbsp;&lt;/AnnualOpenings&gt;<br />
+&nbsp;&lt;/DeviceAccess&gt;<br />
+&nbsp;&lt;DeviceNetworks&gt;DeviceNetworks&lt;/DeviceNetworks&gt;<br />
+&nbsp;&lt;ChargeDeviceStatus&gt;ChargeDeviceStatus&lt;/ChargeDeviceStatus&gt;<br />
+&nbsp;&lt;PublishStatus&gt;PublishStatus&lt;/PublishStatus&gt;<br />
+&nbsp;&lt;DeviceValidated&gt;DeviceValidated&lt;/DeviceValidated&gt;<br />
+&nbsp;&lt;RecordModerated&gt;RecordModerated&lt;/RecordModerated&gt;<br />
+&nbsp;&lt;RecordLastUpdated&gt;RecordLastUpdated&lt;/RecordLastUpdated&gt;<br />
+&nbsp;&lt;RecordLastUpdatedBy&gt;RecordLastUpdatedBy&lt;/RecordLastUpdatedBy&gt;<br />
+&nbsp;&lt;PaymentRequiredFlag&gt;true&lt;/PaymentRequiredFlag&gt;<br />
+&nbsp;&lt;PaymentDetails&gt;PaymentDetails&lt;/PaymentDetails&gt;<br />
+&nbsp;&lt;SubscriptionRequiredFlag&gt;true&lt;/SubscriptionRequiredFlag&gt;<br />
+&nbsp;&lt;ParkingFeesFlag&gt;true&lt;/ParkingFeesFlag&gt;<br />
+&nbsp;&lt;ParkingFeesDetails&gt;ParkingFeesDetails&lt;/ParkingFeesDetails&gt;<br />
+&nbsp;&lt;AccessRestrictionFlag&gt;true&lt;/AccessRestrictionFlag&gt;<br />
+&nbsp;&lt;AccessRestrictionDetails&gt;AccessRestrictionDetails&lt;/AccessRestrictionDetails&gt;<br />
+&nbsp;&lt;PhysicalRestrictionFlag&gt;true&lt;/PhysicalRestrictionFlag&gt;<br />
+&nbsp;&lt;PhysicalRestrictionText&gt;PhysicalRestrictionText&lt;/PhysicalRestrictionText&gt;<br />
+&nbsp;&lt;OnStreetFlag&gt;true&lt;/OnStreetFlag&gt;<br />
+&nbsp;&lt;LocationType&gt;LocationType&lt;/LocationType&gt;<br />
+&nbsp;&lt;Bearing&gt;Bearing&lt;/Bearing&gt;<br />
+&nbsp;&lt;Accessible24Hours&gt;true&lt;/Accessible24Hours&gt;<br />
+&nbsp;&lt;/ChargeDevice&gt;<br />
+&lt;/p:ChargeDevices&gt;<br />
+	
+	</pre>
+  <p>Empty resultset:</p>
+  <pre class="code">&lt;p:ChargeDevices&gt;<br />
+&nbsp;&lt;ChargeDevice /&gt;<br />
+&lt;/p:ChargeDevices&gt;<br />
+	
+	</pre>
+  <p>Postcode error:</p>
+  <pre class="code">&lt;p:ChargeDevices&gt;<br />
+&nbsp;&lt;Error&gt;Postcode not found&nbsp;&lt;/Error&gt;<br />
+&lt;/p:ChargeDevices&gt;<br />
+	
+	</pre>
+  <h3>JSON</h3>
+  <pre class="code">&nbsp;{<br />&nbsp;&nbsp;"ChargeDevice" : {<br />&nbsp;&nbsp;&nbsp;<i>{ChargeDeviceId}</i> : {<br />&nbsp;&nbsp;&nbsp;&nbsp;"ChargeDeviceRef" : "",<br />&nbsp;&nbsp;&nbsp;&nbsp;"ChargeDeviceName" : "",<br />&nbsp;&nbsp;&nbsp;&nbsp;"ChargeDeviceText" : &quot;&quot;,<br />&nbsp;&nbsp;&nbsp;&nbsp;"ChargeDeviceLocation" : {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"Latitude" : "0.0",<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"Longitude" : "0.0",<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"Address" : {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"SubBuildingName" : "",<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"BuildingName" : &quot;&quot;,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"BuildingNumber" : &quot;&quot;,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"Thoroughfare" : &quot;&quot;,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"Street" : &quot;&quot;,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"DoubleDependantLocality" : &quot;&quot;,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"DependantLocality" : &quot;&quot;,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"PostTown" : &quot;&quot;,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"County" : &quot;&quot;,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"PostCode" : &quot;&quot;,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"Country" : &quot;&quot;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"UPRN" : &quot;&quot;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;},<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"LocationShortDescription" : &quot;&quot;,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"LocationLongDescription" : &quot;&quot;<br />&nbsp;&nbsp;&nbsp;&nbsp;},<br />&nbsp;&nbsp;&nbsp;&nbsp;"ChargeDeviceManufacturer" : "",<br />&nbsp;&nbsp;&nbsp;&nbsp;"ChargeDeviceModel" : "",<br />&nbsp;&nbsp;&nbsp;&nbsp;"PublishStatusID" : "",<br />&nbsp;&nbsp;&nbsp;&nbsp;"DateCreated" : "0000-00-00 00:00:00",<br />&nbsp;&nbsp;&nbsp;&nbsp;"DateUpdated" : "0000-00-00 00:00:00",<br />&nbsp;&nbsp;&nbsp;&nbsp;"Attribution" : "",<br />&nbsp;&nbsp;&nbsp;&nbsp;"DateDeleted" : "",<br />&nbsp;&nbsp;&nbsp;&nbsp;"Connector" : {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>{ConnectorId}</i> : {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;ConnectorId&quot; : &quot;&quot;,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;ConnectorType&quot; : &quot;&quot;,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;RatedOutputkW&quot; : &quot;&quot;,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;RatedOutputVoltage&quot; : &quot;&quot;,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;RatedOutputCurrent&quot; : &quot;&quot;,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;ChargeMethod&quot; : &quot;&quot;,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;ChargeMode&quot; : &quot;&quot;,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;ChargePointStatus&quot; : &quot;&quot;,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;TetheredCable&quot; : &quot;&quot;,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;Information&quot; : &quot;&quot;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;Validated&quot; : &quot;&quot;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;},<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>{ConnectorId}</i> : {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;ConnectorId&quot; : &quot;&quot;,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;ConnectorType&quot; : &quot;&quot;,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;RatedOutputkW&quot; : &quot;&quot;,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;RatedOutputVoltage&quot; : &quot;&quot;,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;RatedOutputCurrent&quot; : &quot;&quot;,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;ChargeMethod&quot; : &quot;&quot;,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;ChargeMode&quot; : &quot;&quot;,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;ChargePointStatus&quot; : &quot;&quot;,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;TetheredCable&quot; : &quot;&quot;,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;Information&quot; : &quot;&quot;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;Validated&quot; : &quot;&quot;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;},<br />&nbsp;&nbsp;&nbsp;&nbsp;},<br />&nbsp;&nbsp;&nbsp;&nbsp;"DeviceOwner" : {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"OrganisationName" : &quot;&quot;,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"SchemeCode" : &quot;&quot;,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"Website" : &quot;&quot;,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"TelephoneNo" : &quot;&quot;,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"ContactName" : &quot;&quot;,<br />&nbsp;&nbsp;&nbsp;&nbsp;},<br />&nbsp;&nbsp;&nbsp;&nbsp;"DeviceController" : {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"OrganisationName" : &quot;&quot;,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"SchemeCode" : &quot;&quot;,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"Website" : &quot;&quot;,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"TelephoneNo" : &quot;&quot;,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"ContactName" : &quot;&quot;,<br />&nbsp;&nbsp;&nbsp;&nbsp;},<br />&nbsp;&nbsp;&nbsp;&nbsp;"DeviceAccess" : {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"Open24Hours" : true,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"RegularOpenings" : {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>{AccessTimeId}</i> : {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;Days&quot; : &quot;Monday&quot;,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;Hours&quot; : {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;From&quot; : &quot;00 : 00&quot;,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;To&quot; : &quot;00 : 00&quot;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;},<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>{AccessTimeId}</i> : {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;Days&quot; : &quot;Tuesday&quot;,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;Hours&quot; : {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;From&quot; : &quot;00 : 00&quot;,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;To&quot; : &quot;00 : 00&quot;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;},<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"AnnualOpenings" : {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>{AccessTimeId}</i> : {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"Date" : "1970-01-01",<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"Hours" : {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"From" : "00 : 00",<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"To" : "00 : 00"<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;},<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>{AccessTimeId}</i> : {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;Date&quot; : &quot;1970-01-01&quot;,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;Hours&quot; : {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;From&quot; : &quot;00 : 00&quot;,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;To&quot; : &quot;00 : 00&quot;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;},<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"AnnualClosings" : {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>{AccessTimeId}</i> : {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"From" : "1970-01-01",<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"To" : "1970-01-01"<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;},<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>{AccessTimeId}</i> : {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;From&quot; : &quot;1970-01-01&quot;,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;To&quot; : &quot;1970-01-01&quot;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;},<br />&nbsp;&nbsp;&nbsp;&nbsp;"PaymentRequiredFlag" : true,<br />&nbsp;&nbsp;&nbsp;&nbsp;"SubscriptionRequiredFlag" : true,<br />&nbsp;&nbsp;&nbsp;&nbsp;"SubscriptionDetails" : &quot;&quot;,<br />&nbsp;&nbsp;&nbsp;&nbsp;"ParkingFeesFlag" : true,<br />&nbsp;&nbsp;&nbsp;&nbsp;"ParkingFeesDetails" : &quot;&quot;,<br />&nbsp;&nbsp;&nbsp;&nbsp;"AccessRestrictionFlag" : true,<br />&nbsp;&nbsp;&nbsp;&nbsp;"AccessRestrictionDetails" : &quot;&quot;,<br />&nbsp;&nbsp;&nbsp;&nbsp;"PhysicalRestrictionFlag" : true,<br />&nbsp;&nbsp;&nbsp;&nbsp;"PhysicalRestrictionText" : &quot;&quot;,<br />&nbsp;&nbsp;&nbsp;&nbsp;"OnStreetFlag" : true,<br />&nbsp;&nbsp;&nbsp;&nbsp;"LocationType" : &quot;&quot;<br />&nbsp;&nbsp;&nbsp;&nbsp;"Bearing" : &quot;&quot;<br />&nbsp;&nbsp;&nbsp;&nbsp;"Accessible24Hours" : true<br />&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;}<br />&nbsp;}</pre>
+
+<h3>CSV</h3>
+<p>The CSV file has the following column headings</p>
+
+<pre class="code">
+<br />&nbsp;chargeDeviceID
+<br />&nbsp;reference
+<br />&nbsp;name
+<br />&nbsp;latitude
+<br />&nbsp;longitude
+<br />&nbsp;subBuildingName
+<br />&nbsp;buildingName
+<br />&nbsp;buildingNumber
+<br />&nbsp;thoroughfare
+<br />&nbsp;street
+<br />&nbsp;doubleDependantLocality
+<br />&nbsp;dependantLocality
+<br />&nbsp;town
+<br />&nbsp;county
+<br />&nbsp;postcode
+<br />&nbsp;countryCode
+<br />&nbsp;uprn
+<br />&nbsp;deviceDescription
+<br />&nbsp;locationShortDescription
+<br />&nbsp;locationLongDescription
+<br />&nbsp;deviceManufacturer
+<br />&nbsp;deviceModel
+<br />&nbsp;deviceOwnerName
+<br />&nbsp;deviceOwnerWebsite
+<br />&nbsp;deviceOwnerTelephoneNo
+<br />&nbsp;deviceOwnerContactName
+<br />&nbsp;deviceControllerName
+<br />&nbsp;deviceControllerWebsite
+<br />&nbsp;deviceControllerTelephoneNo
+<br />&nbsp;deviceControllerContactName
+<br />&nbsp;deviceNetworks
+<br />&nbsp;chargeDeviceStatus
+<br />&nbsp;publishStatus
+<br />&nbsp;deviceValidated
+<br />&nbsp;dateCreated
+<br />&nbsp;dateUpdated
+<br />&nbsp;moderated
+<br />&nbsp;lastUpdated
+<br />&nbsp;lastUpdatedBy
+<br />&nbsp;attribution
+<br />&nbsp;dateDeleted
+<br />&nbsp;paymentRequired
+<br />&nbsp;paymentRequiredDetails
+<br />&nbsp;subscriptionRequired
+<br />&nbsp;subscriptionRequiredDetails
+<br />&nbsp;parkingFeesFlag 
+<br />&nbsp;parkingFeesDetails
+<br />&nbsp;accessRestrictionFlag
+<br />&nbsp;accessRestrictionDetails
+<br />&nbsp;physicalRestrictionFlag
+<br />&nbsp;physicalRestrictionText
+<br />&nbsp;onStreetFlag
+<br />&nbsp;locationType
+<br />&nbsp;bearing 
+<br />&nbsp;access24Hours
+<br />&nbsp;accessMondayFrom
+<br />&nbsp;accessMondayTo
+<br />&nbsp;accessTuesdayFrom
+<br />&nbsp;accessTuesdayTo
+<br />&nbsp;accessWednesdayFrom
+<br />&nbsp;accessWednesdayTo
+<br />&nbsp;accessThursdayFrom
+<br />&nbsp;accessThursdayTo
+<br />&nbsp;accessFridayFrom
+<br />&nbsp;accessFridayTo
+<br />&nbsp;accessSaturdayFrom
+<br />&nbsp;accessSaturdayTo
+<br />&nbsp;accessSundayFrom
+<br />&nbsp;accessSundayTo
+<br />&nbsp;connector1ID
+<br />&nbsp;connector1Type
+<br />&nbsp;connector1RatedOutputKW
+<br />&nbsp;connector1OutputCurrent
+<br />&nbsp;connector1RatedVoltage
+<br />&nbsp;connector1ChargeMethod
+<br />&nbsp;connector1ChargeMode
+<br />&nbsp;connector1TetheredCable
+<br />&nbsp;connector1Status
+<br />&nbsp;connector1Description
+<br />&nbsp;connector1Validated
+<br />&nbsp;connector2ID
+<br />&nbsp;connector2Type
+<br />&nbsp;connector2RatedOutputKW
+<br />&nbsp;connector2OutputCurrent
+<br />&nbsp;connector2RatedVoltage
+<br />&nbsp;connector2ChargeMethod
+<br />&nbsp;connector2ChargeMode
+<br />&nbsp;connector2TetheredCable
+<br />&nbsp;connector2Status
+<br />&nbsp;connector2Description
+<br />&nbsp;connector2Validated
+<br />&nbsp;connector3ID
+<br />&nbsp;connector3Type
+<br />&nbsp;connector3RatedOutputKW
+<br />&nbsp;connector3OutputCurrent
+<br />&nbsp;connector3RatedVoltage
+<br />&nbsp;connector3ChargeMethod
+<br />&nbsp;connector3ChargeMode
+<br />&nbsp;connector3TetheredCable
+<br />&nbsp;connector3Status
+<br />&nbsp;connector3Description
+<br />&nbsp;connector3Validated
+<br />&nbsp;connector4ID
+<br />&nbsp;connector4Type
+<br />&nbsp;connector4RatedOutputKW
+<br />&nbsp;connector4OutputCurrent
+<br />&nbsp;connector4RatedVoltage
+<br />&nbsp;connector4ChargeMethod
+<br />&nbsp;connector4ChargeMode
+<br />&nbsp;connector4TetheredCable
+<br />&nbsp;connector4Status
+<br />&nbsp;connector4Description
+<br />&nbsp;connector4Validated
+<br />&nbsp;connector5ID
+<br />&nbsp;connector5Type
+<br />&nbsp;connector5RatedOutputKW
+<br />&nbsp;connector5OutputCurrent
+<br />&nbsp;connector5RatedVoltage
+<br />&nbsp;connector5ChargeMethod
+<br />&nbsp;connector5ChargeMode
+<br />&nbsp;connector5TetheredCable
+<br />&nbsp;connector5Status
+<br />&nbsp;connector5Description
+<br />&nbsp;connector5Validated
+<br />&nbsp;connector6ID
+<br />&nbsp;connector6Type
+<br />&nbsp;connector6RatedOutputKW
+<br />&nbsp;connector6OutputCurrent
+<br />&nbsp;connector6RatedVoltage
+<br />&nbsp;connector6ChargeMethod
+<br />&nbsp;connector6ChargeMode
+<br />&nbsp;connector6TetheredCable
+<br />&nbsp;connector6Status
+<br />&nbsp;connector6Description
+<br />&nbsp;connector6Validated
+<br />&nbsp;connector7ID
+<br />&nbsp;connector7Type
+<br />&nbsp;connector7RatedOutputKW
+<br />&nbsp;connector7OutputCurrent
+<br />&nbsp;connector7RatedVoltage
+<br />&nbsp;connector7ChargeMethod
+<br />&nbsp;connector7ChargeMode
+<br />&nbsp;connector7TetheredCable
+<br />&nbsp;connector7Status
+<br />&nbsp;connector7Description
+<br />&nbsp;connector7Validated
+<br />&nbsp;connector8ID
+<br />&nbsp;connector8Type
+<br />&nbsp;connector8RatedOutputKW
+<br />&nbsp;connector8OutputCurrent
+<br />&nbsp;connector8RatedVoltage
+<br />&nbsp;connector8ChargeMethod
+<br />&nbsp;connector8ChargeMode
+<br />&nbsp;connector8TetheredCable
+<br />&nbsp;connector8Status
+<br />&nbsp;connector8Description
+<br />&nbsp;connector8Validated
+</pre>
+
+</div>
+			</div>
+		</div>	
+		<!-- main end -->
+		
+		<!-- footer start -->
+		<div id="footer">
+			<!-- footer_top start -->
+			<div id="footer_top">
+				
+			</div>
+
+			<!-- footer_top end -->
+			<!-- footer_bottom start -->
+			<div id="footer_bottom">
+				<div class="wrapp">
+					<p class="left">&copy;2015 Department for Transport / Office for Low Emission Vehicles. All rights reserved.</p>
+				</div>
+			</div>
+			<!-- footer_bottom end -->
+		</div>
+		<!-- footer end -->
+	</div>
+	<!-- wrapper end -->
+	
+	<!-- dialogs start -->
+	<div class="dialogs">
+		<div id="dialog-confirm" title="Please confirm">
+			<p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span><span id="dialog-confirm-text"></span></p>
+		</div>
+		<div id="dialog-alert" title="Information">
+			<p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span><span id="dialog-alert-text"></span></p>
+		</div>
+		<div id="dialog-form" title="Opening and closing times">
+		<span id="dialog-form-text"></span>
+		</div>
+	</div>
+	<!-- dialogs end -->
+	<div id="pageBottom"></div>
+	<div id="loading">
+	
+	</div>
+	<div id="loadingIcon">
+	<img src="/images/loading.gif" />
+	</div>
+	
+</body>
+</html>
