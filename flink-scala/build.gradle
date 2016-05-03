@@ -13,6 +13,7 @@ dependencies {
   compile(['org.apache.flink:flink-scala_2.11:1.0.2',
            'org.apache.flink:flink-streaming-scala_2.11:1.0.2',
            'org.apache.flink:flink-clients_2.11:1.0.2',
+           'org.apache.flink:flink-connector-kafka-0.9_2.11:1.0.2',
            'org.json4s:json4s-native_2.11:3.3.0',
   ])
   testCompile(['org.scalactic:scalactic_2.11:2.2.6',
