@@ -1,0 +1,22 @@
+group 'tonybaines'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  compile(['org.apache.flink:flink-java:1.0.2',
+           'org.apache.flink:flink-streaming-java_2.11:1.0.2',
+           'org.apache.flink:flink-clients_2.11:1.0.2',
+           'org.apache.flink:flink-connector-kafka-0.9_2.11:1.0.2',
+  ])
+}
+
+
+task wrapper(type: Wrapper) {
+  gradleVersion = '2.13'
+  distributionUrl = "https://services.gradle.org/distributions/gradle-$gradleVersion-all.zip"
+}
