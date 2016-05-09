@@ -1,18 +1,77 @@
+import jdk.nashorn.internal.parser.JSONParser
+
+import java.time.Instant
+
 group 'tonybaines'
 version '1.0-SNAPSHOT'
 
-apply plugin: 'java'
-
-repositories {
-  mavenCentral()
+buildscript {
+  repositories {
+    maven {
+      url "https://plugins.gradle.org/m2/"
+    }
+  }
+  dependencies {
+    classpath "org._10ne.gradle:rest-gradle-plugin:0.4.1"
+  }
 }
+apply plugin: "org.tenne.rest"
 
-dependencies {
-  compile(['org.apache.flink:flink-java:1.0.2',
-           'org.apache.flink:flink-streaming-java_2.11:1.0.2',
-           'org.apache.flink:flink-clients_2.11:1.0.2',
-           'org.apache.flink:flink-connector-kafka-0.9_2.11:1.0.2',
-  ])
+project.ext.baseUri = 'http://127.0.0.1:48080'
+
+task getFlinkConfig(type: org._10ne.gradle.rest.RestTask) {
+  httpMethod = 'get'
+  uri = "${project.ext.baseUri}/config"
+  doLast({
+    def config = serverResponse.getData()
+    println "Version: ${config.'flink-version'}"
+    println "Timezone: ${config.'timezone-name'}"
+    println "TZ-Offset: ${config.'timezone-offset'}"
+  })
+}
+task getFlinkOverview(type: org._10ne.gradle.rest.RestTask) {
+  httpMethod = 'get'
+  uri = "${project.ext.baseUri}/overview"
+  doLast({
+    def overview = serverResponse.getData()
+    println "Version: ${overview.'flink-version'}"
+    println "Cancelled Jobs: ${overview.'jobs-cancelled'}"
+    println "Failed Jobs: ${overview.'jobs-failed'}"
+    println "Finished Jobs: ${overview.'jobs-finished'}"
+    println "Running Jobs: ${overview.'jobs-running'}"
+    println "Total Slots: ${overview.'slots-total'}"
+    println "Available Slots: ${overview.'slots-available'}"
+    println "Task Managers: ${overview.'taskmanagers'}"
+  })
+}
+task getFlinkJobs(type: org._10ne.gradle.rest.RestTask) {
+  httpMethod = 'get'
+  uri = "${project.ext.baseUri}/joboverview"
+  doLast({
+    def jobs = serverResponse.getData()
+    //println jobs
+    def debugJobDetail = { job ->
+      println "\tname: ${job.name}"
+      println "\tduration: ${job.duration}"
+      println "\tstart-time: ${Instant.ofEpochMilli(job.'start-time').toString()}"
+      println "\tend-time: ${Instant.ofEpochMilli(job.'end-time').toString()}"
+      println ''
+    }
+    println '==============================================================='
+    println "Running:"
+    jobs.running.each debugJobDetail
+    println '==============================================================='
+    println "Finished:"
+    jobs.finished.each debugJobDetail
+    println '==============================================================='
+    println "Cancelled:"
+    jobs.cancelled.each debugJobDetail
+    println '==============================================================='
+    println "Failed:"
+    jobs.failed.each debugJobDetail
+    println '==============================================================='
+
+  })
 }
 
 
